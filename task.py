@@ -3,10 +3,10 @@ UNCOMPLETED_FLAG = ""
 ID_CHAR = "#"
 
 class Task:
-    def __init__(self, id, description):
+    def __init__(self, id, description, completed=False):
         self.id = id
         self.description = description
-        self._completed = False
+        self._completed = completed
 
     def mark_completed(self):
         self._completed = True
