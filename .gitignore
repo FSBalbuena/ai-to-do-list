@@ -1,1 +1,10 @@
-.venv/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+.env
+.venv
+env/
+venv/
+
+# VS Code
+.vscode/
