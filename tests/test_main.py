@@ -1,6 +1,11 @@
+import os
+import sys
 import pytest
 import builtins
-from main import clear_screen, show_menu, main
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from main import clear_screen, show_menu, main, select_id
 import copywrite
 
 
@@ -48,3 +53,15 @@ def test_main_handles_invalid_option(monkeypatch, capsys):
     captured = capsys.readouterr()
     assert copywrite.INVALID_OPTION_MSG in captured.out
     assert copywrite.GOOD_BYE in captured.out
+
+
+def test_select_id_retries_invalid_input(monkeypatch, capsys):
+    """Test that select_id retries on invalid numeric entry."""
+    inputs = iter(["abc", "100"])
+    monkeypatch.setattr(builtins, 'input', lambda prompt='': next(inputs))
+
+    value = select_id("Enter ID: ")
+
+    captured = capsys.readouterr()
+    assert "Please introduce a numeric id" in captured.out
+    assert value == 100
