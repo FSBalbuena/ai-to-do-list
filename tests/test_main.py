@@ -28,8 +28,10 @@ def test_show_menu_prints_menu_options(capsys):
     assert copywrite.MENU_OPTION_5 in captured.out
 
 
-def test_main_exits_on_option_6(monkeypatch, capsys):
+def test_main_exits_on_option_6(monkeypatch, capsys, tmp_path):
     """Test that main() exits when user selects option 6."""
+    monkeypatch.setenv('TASKS_FILE_PATH', str(tmp_path / 'tasks.json'))
+
     # Mock input to return OPTION_6 immediately
     inputs = iter([copywrite.OPTION_6])
     monkeypatch.setattr(builtins, 'input', lambda prompt: next(inputs))
@@ -42,8 +44,10 @@ def test_main_exits_on_option_6(monkeypatch, capsys):
     assert copywrite.GOOD_BYE in captured.out
 
 
-def test_main_handles_invalid_option(monkeypatch, capsys):
+def test_main_handles_invalid_option(monkeypatch, capsys, tmp_path):
     """Test that main() shows invalid option message and continues."""
+    monkeypatch.setenv('TASKS_FILE_PATH', str(tmp_path / 'tasks.json'))
+
     # Mock input: invalid option, press key, then exit
     inputs = iter(["invalid", "enter", copywrite.OPTION_6])
     monkeypatch.setattr(builtins, 'input', lambda prompt: next(inputs))
@@ -67,8 +71,10 @@ def test_select_id_retries_invalid_input(monkeypatch, capsys):
     assert value == 100
 
 
-def test_main_complex_task_fallback_to_add_task(monkeypatch, capsys):
+def test_main_complex_task_fallback_to_add_task(monkeypatch, capsys, tmp_path):
     """Test that main() falls back to add_task when complex task assistant fails."""
+    monkeypatch.setenv('TASKS_FILE_PATH', str(tmp_path / 'tasks.json'))
+
     # Force call_cohere_generate_subtasks to throw
     monkeypatch.setattr('main.call_cohere_generate_subtasks', lambda description: (_ for _ in ()).throw(Exception('API fail')))
 
@@ -81,3 +87,19 @@ def test_main_complex_task_fallback_to_add_task(monkeypatch, capsys):
     assert "Something went wrong. (AI service error)" in captured.out
     assert "[Fallback task] " in captured.out
     assert copywrite.CREATE_TASK_SUCCESS in captured.out
+
+
+def test_main_complex_task_success(monkeypatch, capsys, tmp_path):
+    """Test that main() outputs generated subtasks when AI assistant succeeds."""
+    monkeypatch.setenv('TASKS_FILE_PATH', str(tmp_path / 'tasks.json'))
+    monkeypatch.setattr('main.call_cohere_generate_subtasks', lambda description: ['A', 'B', 'C'])
+
+    inputs = iter([copywrite.OPTION_2, 'Generate me tasks', '', copywrite.OPTION_6])
+    monkeypatch.setattr(builtins, 'input', lambda prompt='': next(inputs))
+
+    main()
+
+    captured = capsys.readouterr()
+    assert "[Generating subtasks...]" in captured.out
+    assert "3 Complex task subtasks generated successfully" in captured.out
+
