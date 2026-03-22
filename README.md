@@ -13,7 +13,7 @@ This project is developed as part of a **Master's course** on implementing AI to
 - **Persistence**: Store tasks locally in JSON format (no database required)
 - **Clean Architecture**: Build on object-oriented principles with clear separation of concerns
 
-## 🏁 Current Status (v0.2: Persistence + .env)
+## 🏁 Current Status (v1.0: AI complex task generation + fallback)
 
 ✅ Basic CLI task operations implemented:
 
@@ -22,15 +22,20 @@ This project is developed as part of a **Master's course** on implementing AI to
 - Complete task
 - Delete task
 
-✅ TaskManager class with private task storage
-✅ JSON persistence layer implemented via `persistence.py`
-✅ `.env` use for configuration.
-✅ Full end-to-end tests for task manager and persistence
-✅ All v0.2 features are covered in code and tests
+✅ Cohere AI integration via `cohere_integration.py`:
+- `call_cohere_generate_subtasks` support for multiple response formats (`message`, `generations`, `output`, dict fallback)
+- Prompting to generate 3-5 formatted subtasks
+
+✅ `TaskManager.generate_complex_task` with validation and AI fallback handling
+✅ Main menu option for AI complex task creation (option 2)
+✅ Fallback: if AI fails, degrade to normal `add_task` and show error message
+✅ Configuration using `.env` (Cohere API key, tasks file path)
+✅ Unit tests for TaskManager, Main, persistence, and Cohere integration
+✅ CI coverage check (>=80%) and current coverage 95%
 
 ## 🌟 Features
 
-### Planned Features for v0.1 (Basic Functionality)
+### v1.0 (Delivered)
 
 - CLI menu interface with intuitive navigation
 - Task model with properties: id, description, completed
