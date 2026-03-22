@@ -13,7 +13,7 @@ This project is developed as part of a **Master's course** on implementing AI to
 - **Persistence**: Store tasks locally in JSON format (no database required)
 - **Clean Architecture**: Build on object-oriented principles with clear separation of concerns
 
-## 🏁 Current Status (v0.1)
+## 🏁 Current Status (v1.0: AI complex task generation + fallback)
 
 ✅ Basic CLI task operations implemented:
 
@@ -22,13 +22,20 @@ This project is developed as part of a **Master's course** on implementing AI to
 - Complete task
 - Delete task
 
-✅ TaskManager class with in-memory task storage
-✅ Clear screen and invalid input handling
-✅ All v0.1 features are covered in code and tests
+✅ Cohere AI integration via `cohere_integration.py`:
+- `call_cohere_generate_subtasks` support for multiple response formats (`message`, `generations`, `output`, dict fallback)
+- Prompting to generate 3-5 formatted subtasks
+
+✅ `TaskManager.generate_complex_task` with validation and AI fallback handling
+✅ Main menu option for AI complex task creation (option 2)
+✅ Fallback: if AI fails, degrade to normal `add_task` and show error message
+✅ Configuration using `.env` (Cohere API key, tasks file path)
+✅ Unit tests for TaskManager, Main, persistence, and Cohere integration
+✅ CI coverage check (>=80%) and current coverage 95%
 
 ## 🌟 Features
 
-### Planned Features for v0.1 (Basic Functionality)
+### v1.0 (Delivered)
 
 - CLI menu interface with intuitive navigation
 - Task model with properties: id, description, completed
@@ -164,9 +171,22 @@ Template for environment configuration. Copy this file to `.env` and fill in you
    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
    ```
 
-3. **Install dependencies** Not yet finalized, but will include AI libraries in the future:
+3. **Install dependencies**
+
    ```bash
    pip install -r requirements.txt
+   ```
+
+4. **Create your .env file** (if not already created)
+
+   ```bash
+   cp .env-example .env
+   ```
+
+5. **Run the app**
+
+   ```bash
+   python main.py
    ```
 
 ### Running the Application
@@ -191,6 +211,18 @@ Test coverage includes:
 - TaskManager CRUD operations
 - JSON persistence
 - AI destructuring logic (when implemented)
+
+## 🔒 Gitignore and safe commits
+
+This project ignores local artifacts and secrets to prevent leak:
+
+- `.env` (API keys and config)
+- `.venv/`, `venv/` (virtual environment)
+- `__pycache__/`, `.pytest_cache/`, `*.pyc` (Python bytecode/test cache)
+- `.vscode/`, `.idea/` (editor settings)
+- coverage outputs (`.coverage`, `coverage.xml`, `htmlcov/`)
+
+Confirm `.gitignore` includes these patterns when adding new generated or local files.
 
 ## 🔧 Development Roadmap
 
